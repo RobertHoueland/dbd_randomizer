@@ -2,11 +2,14 @@
 
 import requests
 import random
+import requests_cache
 
+# Images from https://github.com/dearvoodoo/dbd
 # Thank you to Tricky for API
 MAIN_URL = 'https://dbd.tricky.lol/api/'
 
 
+# Get index of random killer/survivor
 def get_rand_char(character: str, num_characters) -> int:
     if character == 'survivor':
         return random.randint(0, num_characters - 1)
@@ -16,7 +19,7 @@ def get_rand_char(character: str, num_characters) -> int:
         return random.randint(268435456, 268435455 + num_characters)
 
 
-# Get request for either survivor or killer and return name
+# Get request for killer/survivor name
 def get_character(character: str) -> dict:
     try:
         response = requests.get(MAIN_URL + 'characters/?role=' + character)
@@ -85,8 +88,14 @@ def get_perks(character: str) -> dict:
 
 
 def main():
+    # Expires after 23 hours
+    requests_cache.install_cache(cache_name='dbd_cache', expire_after=82800)
+
+    # CLI App
     print('Enter 0 for survivor, 1 for killer')
     choice = input()
+
+    # Get character name and perks
     if choice == '0':
         name = get_character('survivor')
         perks = get_perks('survivor')
@@ -95,6 +104,12 @@ def main():
         perks = get_perks('killer')
     else:
         print('Invalid input')
+        return
+
+    if name is None:
+        print('Error getting character')
+    if perks is None:
+        print('Error getting perks')
         return
 
     print(name)
