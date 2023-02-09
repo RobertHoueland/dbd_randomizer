@@ -5,10 +5,11 @@ import random
 import requests_cache
 import sys
 
-from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtCore import QSize, QThread, QObject, pyqtSignal
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QPushButton,
-                             QLabel, QLineEdit, QVBoxLayout, QWidget, QHBoxLayout)
-from PyQt6 import QtWidgets, QtGui, QtCore
+                             QLabel, QVBoxLayout, QWidget,
+                             QHBoxLayout, QProgressBar)
+from PyQt6 import QtGui, QtCore
 
 # Images from https://github.com/dearvoodoo/dbd
 # Thank you to Tricky for API
@@ -53,10 +54,18 @@ class MainWindow(QMainWindow):
         self.button_killer.setFixedWidth(200)
         self.button_killer.setFixedHeight(50)
 
+        # Character and perks label
         self.result_label = QLabel("")
         self.result_label.setVisible(False)
         self.result_label.setStyleSheet("font: 18px;")
         self.result_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+
+        # Loading bar
+        self.loading_bar = QProgressBar()
+        self.loading_bar.setVisible(False)
+        self.loading_bar.setRange(0, 0)
+        self.loading_bar.setFixedHeight(50)
+        self.loading_bar.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         # Assemble layout
         hbox = QHBoxLayout()
@@ -70,35 +79,100 @@ class MainWindow(QMainWindow):
         vbox = QVBoxLayout()
         vbox.addWidget(self.title_label)
         vbox.addWidget(self.result_label)
+        vbox.addWidget(self.loading_bar)
         vbox.addLayout(hbox)
 
         self.central_widget.setLayout(vbox)
 
+    def receive_results(self, name, perks):
+        if name is None or perks is None:
+            self.result_label.setText('Error retrieving data')
+        else:
+            self.result_label.setText(name + '\n\n' + '\n'.join(perks))
+        print(f"Received results: {name}, {perks}")
+        return name, perks
+
     # Generate survivor info
     def button_survivor_on_click(self):
-        name = get_character('survivor')
-        perks = get_perks('survivor')
+        self.loading_bar.setVisible(True)
+        self.button_survivor.setEnabled(False)
+        self.button_killer.setEnabled(False)
 
-        if name is None or perks is None:
-            self.result_label.setText('Error retrieving data')
-        else:
-            self.result_label.setText(name + '\n\n' + '\n'.join(perks))
-        self.result_label.show()
+        # Create thread to recieve info in background
+        self.thread = QThread()
+        self.worker = Worker('survivor')
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.result.connect(self.thread.quit)
+        self.worker.result.connect(self.worker.deleteLater)
+        self.worker.result.connect(self.receive_results)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.start()
+
+        # Hide loading bar and show results when thread is finished
+        self.thread.finished.connect(
+            lambda: self.loading_bar.setVisible(False),
+        )
+        self.thread.finished.connect(
+            lambda: self.result_label.setVisible(True),
+        )
+        self.thread.finished.connect(
+            lambda: self.button_survivor.setEnabled(True),
+        )
+        self.thread.finished.connect(
+            lambda: self.button_killer.setEnabled(True),
+        )
 
     # Generate killer info
-    def button_killer_on_click(self):
-        name = get_character('killer')
-        perks = get_perks('killer')
 
-        if name is None or perks is None:
-            self.result_label.setText('Error retrieving data')
-        else:
-            self.result_label.setText(name + '\n\n' + '\n'.join(perks))
-        self.result_label.show()
+    def button_killer_on_click(self):
+        self.loading_bar.setVisible(True)
+        self.button_survivor.setEnabled(False)
+        self.button_killer.setEnabled(False)
+
+        # Create thread to recieve info in background
+        self.thread = QThread()
+        self.worker = Worker('killer')
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.result.connect(self.thread.quit)
+        self.worker.result.connect(self.worker.deleteLater)
+        self.worker.result.connect(self.receive_results)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.start()
+
+        # Hide loading bar and show results when thread is finished
+        self.thread.finished.connect(
+            lambda: self.loading_bar.setVisible(False),
+        )
+        self.thread.finished.connect(
+            lambda: self.result_label.setVisible(True),
+        )
+        self.thread.finished.connect(
+            lambda: self.button_survivor.setEnabled(True),
+        )
+        self.thread.finished.connect(
+            lambda: self.button_killer.setEnabled(True),
+        )
+
+
+# Thread to run request in background
+class Worker(QObject):
+    result = pyqtSignal(str, list)
+
+    def __init__(self, character):
+        super().__init__()
+        self.char = character
+
+    def run(self):
+        # Retrieve data
+        name = get_character(self.char)
+        perks = get_perks(self.char)
+        self.result.emit(name, perks)
 
 
 # Get index of random killer/survivor
-def get_rand_char(character: str, num_characters) -> int:
+def get_rand_char(character, num_characters):
     if character == 'survivor':
         return random.randint(0, num_characters - 1)
     elif character == 'killer':
@@ -108,9 +182,10 @@ def get_rand_char(character: str, num_characters) -> int:
 
 
 # Get request for killer/survivor name
-def get_character(character: str) -> dict:
+def get_character(character) -> dict:
     try:
-        response = requests.get(MAIN_URL + 'characters/?role=' + character)
+        response = requests.get(
+            MAIN_URL + 'characters/?role=' + character, timeout=5)
         response.raise_for_status()
 
         # success
@@ -140,9 +215,10 @@ def get_character(character: str) -> dict:
 
 
 # Get request for perks and return names
-def get_perks(character: str) -> dict:
+def get_perks(character) -> dict:
     try:
-        response = requests.get(MAIN_URL + 'perks?role=' + character)
+        response = requests.get(
+            MAIN_URL + 'perks?role=' + character, timeout=5)
         response.raise_for_status()
 
         # success
