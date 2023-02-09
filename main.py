@@ -3,10 +3,90 @@
 import requests
 import random
 import requests_cache
+import sys
+
+from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QPushButton,
+                             QLabel, QLineEdit, QVBoxLayout, QWidget, QHBoxLayout)
+from PyQt6 import QtWidgets, QtGui, QtCore
 
 # Images from https://github.com/dearvoodoo/dbd
 # Thank you to Tricky for API
 MAIN_URL = 'https://dbd.tricky.lol/api/'
+
+
+# GUI
+class MainWindow(QMainWindow):
+    # Create GUI
+    def __init__(self):
+        super().__init__()
+
+        # Window settings
+        self.setStyleSheet("background-color: gray;")
+        self.setWindowTitle("DBD Randomizer")
+        self.setMinimumSize(QSize(600, 400))
+
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+
+        # Title label
+        self.title_label = QLabel("Dead by Daylight Randomizer")
+        self.title_label.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.title_label.setContentsMargins(0, 25, 0, 0)
+        self.title_label.setFont(QtGui.QFont(
+            "Times", 20, QtGui.QFont.Weight.Bold))
+
+        # Survivor button
+        self.button_survivor = QPushButton("Generate survivor loadout")
+        self.button_survivor.clicked.connect(self.button_survivor_on_click)
+        self.button_survivor.setFixedWidth(200)
+        self.button_survivor.setFixedHeight(50)
+
+        # Killer button
+        self.button_killer = QPushButton("Generate killer loadout")
+        self.button_killer.clicked.connect(self.button_killer_on_click)
+        self.button_killer.setFixedWidth(200)
+        self.button_killer.setFixedHeight(50)
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.button_survivor)
+        hbox.addWidget(self.button_killer)
+        hbox.setSpacing(100)
+        hbox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.title_label)
+        vbox.addLayout(hbox)
+
+        self.central_widget.setLayout(vbox)
+
+    # Generate survivor info
+    def button_survivor_on_click(self):
+        name = get_character('survivor')
+        perks = get_perks('survivor')
+        show_results(name, perks)
+
+    # Generate killer info
+    def button_killer_on_click(self):
+        name = get_character('killer')
+        perks = get_perks('killer')
+        show_results(name, perks)
+
+
+# DEBUG: print info
+def show_results(name, perks):
+    # Handle errors/exceptions
+    if name is None:
+        print('Error getting character')
+    if perks is None:
+        print('Error getting perks')
+        return
+
+    # Return random results
+    print('\n' + name)
+    for perk in perks:
+        print("    " + perk)
 
 
 # Get index of random killer/survivor
@@ -88,33 +168,16 @@ def get_perks(character: str) -> dict:
 
 
 def main():
-    # Expires after 23 hours
+    # Request cache lasts 23 hours
     requests_cache.install_cache(cache_name='dbd_cache', expire_after=82800)
 
-    # CLI App
-    print('Enter 0 for survivor, 1 for killer')
-    choice = input()
+    # GUI
+    app = QApplication(sys.argv)
 
-    # Get character name and perks
-    if choice == '0':
-        name = get_character('survivor')
-        perks = get_perks('survivor')
-    elif choice == '1':
-        name = get_character('killer')
-        perks = get_perks('killer')
-    else:
-        print('Invalid input')
-        return
+    window = MainWindow()
+    window.show()
 
-    if name is None:
-        print('Error getting character')
-    if perks is None:
-        print('Error getting perks')
-        return
-
-    print(name)
-    for perk in perks:
-        print("    " + perk)
+    app.exec()
 
 
 if __name__ == '__main__':
