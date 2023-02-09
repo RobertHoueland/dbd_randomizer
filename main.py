@@ -177,7 +177,8 @@ def get_perks(character: str) -> dict:
 
 def main():
     # Request cache lasts 23 hours
-    requests_cache.install_cache(cache_name='dbd_cache', expire_after=82800)
+    requests_cache.install_cache(
+        cache_name='dbd_randomizer_cache', expire_after=82800)
 
     # GUI
     app = QApplication(sys.argv)
