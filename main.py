@@ -17,6 +17,8 @@ MAIN_URL = 'https://dbd.tricky.lol/api/'
 
 # GUI
 class MainWindow(QMainWindow):
+    # TODO: killer/survivor checkboxes and perks checkboxes
+    # TODO: add images
     # Create GUI
     def __init__(self):
         super().__init__()
@@ -25,6 +27,8 @@ class MainWindow(QMainWindow):
         self.setStyleSheet("background-color: gray;")
         self.setWindowTitle("DBD Randomizer")
         self.setMinimumSize(QSize(600, 400))
+        # TODO: add icon
+        self.setWindowIcon(QtGui.QIcon('./UI/images/bloodpoints.png'))
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -49,14 +53,23 @@ class MainWindow(QMainWindow):
         self.button_killer.setFixedWidth(200)
         self.button_killer.setFixedHeight(50)
 
+        self.result_label = QLabel("")
+        self.result_label.setVisible(False)
+        self.result_label.setStyleSheet("font: 18px;")
+        self.result_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+
+        # Assemble layout
         hbox = QHBoxLayout()
         hbox.addWidget(self.button_survivor)
         hbox.addWidget(self.button_killer)
         hbox.setSpacing(100)
-        hbox.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        hbox.setAlignment(QtCore.Qt.AlignmentFlag.AlignBottom |
+                          QtCore.Qt.AlignmentFlag.AlignHCenter)
+        hbox.setContentsMargins(0, 0, 0, 25)
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.title_label)
+        vbox.addWidget(self.result_label)
         vbox.addLayout(hbox)
 
         self.central_widget.setLayout(vbox)
@@ -65,28 +78,23 @@ class MainWindow(QMainWindow):
     def button_survivor_on_click(self):
         name = get_character('survivor')
         perks = get_perks('survivor')
-        show_results(name, perks)
+
+        if name is None or perks is None:
+            self.result_label.setText('Error retrieving data')
+        else:
+            self.result_label.setText(name + '\n\n' + '\n'.join(perks))
+        self.result_label.show()
 
     # Generate killer info
     def button_killer_on_click(self):
         name = get_character('killer')
         perks = get_perks('killer')
-        show_results(name, perks)
 
-
-# DEBUG: print info
-def show_results(name, perks):
-    # Handle errors/exceptions
-    if name is None:
-        print('Error getting character')
-    if perks is None:
-        print('Error getting perks')
-        return
-
-    # Return random results
-    print('\n' + name)
-    for perk in perks:
-        print("    " + perk)
+        if name is None or perks is None:
+            self.result_label.setText('Error retrieving data')
+        else:
+            self.result_label.setText(name + '\n\n' + '\n'.join(perks))
+        self.result_label.show()
 
 
 # Get index of random killer/survivor
@@ -111,7 +119,7 @@ def get_character(character: str) -> dict:
 
         rand_num = get_rand_char(character, num_characters)
         if character == 'killer':
-            # killer id needs to be string, surv id is int
+            # killer id needs to be string, surv id is int, api limitation
             rand_num = str(rand_num)
 
         # get random character name
