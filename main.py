@@ -12,6 +12,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QPushButton,
 from PyQt6 import QtGui, QtCore
 
 # Images from https://github.com/dearvoodoo/dbd
+# Icon from https://icons8.com/icon/gRPMIVdHQdZd/tally-mark-of-five
 # Thank you to Tricky for API
 MAIN_URL = 'https://dbd.tricky.lol/api/'
 
@@ -25,11 +26,11 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Window settings
-        self.setStyleSheet("background-color: gray;")
+        self.setStyleSheet("background-color: #b0afdb;")
         self.setWindowTitle("DBD Randomizer")
         self.setMinimumSize(QSize(600, 400))
         # TODO: add icon
-        self.setWindowIcon(QtGui.QIcon('./UI/images/bloodpoints.png'))
+        self.setWindowIcon(QtGui.QIcon('app.ico'))
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -47,12 +48,18 @@ class MainWindow(QMainWindow):
         self.button_survivor.clicked.connect(self.button_survivor_on_click)
         self.button_survivor.setFixedWidth(200)
         self.button_survivor.setFixedHeight(50)
+        self.button_survivor.setStyleSheet("background-color: #423dff;")
+        self.button_survivor.setFont(QtGui.QFont(
+            "Times", 10, QtGui.QFont.Weight.Bold))
 
         # Killer button
         self.button_killer = QPushButton("Generate killer loadout")
         self.button_killer.clicked.connect(self.button_killer_on_click)
         self.button_killer.setFixedWidth(200)
         self.button_killer.setFixedHeight(50)
+        self.button_killer.setStyleSheet("background-color: #423dff;")
+        self.button_killer.setFont(QtGui.QFont(
+            "Times", 10, QtGui.QFont.Weight.Bold))
 
         # Character and perks label
         self.result_label = QLabel("")
@@ -89,8 +96,6 @@ class MainWindow(QMainWindow):
             self.result_label.setText('Error retrieving data')
         else:
             self.result_label.setText(name + '\n\n' + '\n'.join(perks))
-        print(f"Received results: {name}, {perks}")
-        return name, perks
 
     # Generate survivor info
     def button_survivor_on_click(self):
@@ -124,7 +129,6 @@ class MainWindow(QMainWindow):
         )
 
     # Generate killer info
-
     def button_killer_on_click(self):
         self.loading_bar.setVisible(True)
         self.button_survivor.setEnabled(False)
