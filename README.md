@@ -10,3 +10,6 @@ A python GUI that lets you generate a random loadout for either survivor or kill
 # DON'T DELETE THE FILE THAT GETS GENERATED
 
 This "dbd_randomizer_cache.sqlite" file stores all the survivor/killer/perks, etc. information from the API. If you delete it, the program will have to download all the information again, which is slow and the website will temporarily block you if you do this too often.
+
+# Screenshot: (currently redesigning GUI)
+<img src="https://i.imgur.com/A4MlFtC.png">
