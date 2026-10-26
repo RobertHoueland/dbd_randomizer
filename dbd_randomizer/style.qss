@@ -1,0 +1,127 @@
+/* Midnight blue, blood red, perk violet, and warm amber accents. */
+QWidget {
+    color: #e9e8ef;
+    font-family: "DejaVu Sans", "Segoe UI", sans-serif;
+    font-size: 13px;
+}
+QMainWindow, QDialog, QWidget#canvas, QScrollArea { background: #12141e; }
+QLabel { background: transparent; }
+QCheckBox#equipmentToggle {
+    background: #2b3420;
+    border: 1px solid #8da85a;
+    border-radius: 9px;
+    color: #f0edf7;
+    font-size: 15px;
+    font-weight: 600;
+    spacing: 13px;
+    padding: 12px 16px;
+    min-height: 28px;
+}
+QCheckBox#equipmentToggle:hover { background: #3b482a; border-color: #b9dc79; }
+QCheckBox#equipmentToggle:checked { background: #425b25; border-color: #b3df63; color: #ecffd0; }
+QCheckBox#equipmentToggle:checked:hover { background: #526f2f; border-color: #d0f58e; }
+QCheckBox#equipmentToggle:focus { border: 2px solid #d0f58e; padding: 11px 15px; }
+QCheckBox#equipmentToggle:disabled { background: #242535; border-color: #3f4054; color: #9896aa; }
+QCheckBox#equipmentToggle::indicator {
+    width: 26px;
+    height: 26px;
+    border: 2px solid #a8bf85;
+    border-radius: 6px;
+    background: #1c2515;
+    image: none;
+}
+QCheckBox#equipmentToggle::indicator:hover { border-color: #def5b7; }
+QCheckBox#equipmentToggle::indicator:checked { background: #b3df63; border-color: #d5f59e; }
+QCheckBox#equipmentToggle::indicator:disabled { background: #303244; border-color: #67687c; }
+QLabel#brand { font-size: 19px; font-weight: 800; letter-spacing: 3px; }
+QLabel#eyebrow { color: #c8bfd9; font-family: "DejaVu Sans", "Segoe UI", sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; }
+QLabel#heroTitle { font-size: 30px; font-weight: 700; color: #f5eee6; }
+QLabel#sourceBadge { color: #99c5e8; font-size: 12px; padding: 8px 12px; }
+QLabel#sectionTitle { font-size: 23px; font-weight: 700; padding: 8px 0; }
+QLabel#characterName { font-size: 26px; font-weight: 700; color: #f4eee8; }
+QLabel#perkName { font-size: 16px; font-weight: 700; color: #f1e5ff; }
+QLabel#description { color: #c0bdcb; font-size: 12px; }
+QLabel#muted { color: #aaa9be; font-size: 12px; }
+QLabel#poolCount { color: #e1bb83; font-size: 21px; font-weight: 600; }
+QLabel#shortcut { color: #abaac1; font-size: 11px; }
+QLabel#footer { color: #aaa4b8; font-family: "DejaVu Sans", "Segoe UI", sans-serif; font-size: 12px; font-style: normal; font-weight: 400; }
+QLabel#poolInstructions { color: #d3ccdf; font-size: 15px; }
+QTextBrowser#cardDescription { background: transparent; border: none; padding: 0; font-size: 13px; }
+QPushButton#unlockButton { background: #1e4545; border: 1px solid #65c9bb; color: #c5fff3; font-size: 14px; padding: 8px 12px; }
+QPushButton#unlockButton:hover { background: #2b5d59; }
+QPushButton#unlockButton:pressed { background: #163735; }
+QPushButton#unlockButton:disabled { background: #252e32; border-color: #465c5c; color: #93aaa7; }
+QLabel#notice { color: #b9cce4; font-size: 12px; }
+QLabel#error, QLabel#notice[error="true"] { color: #ffaaa3; }
+QFrame#divider { background: #383047; border: none; }
+QFrame#characterCard {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #233d56, stop:1 #192536);
+    border: 1px solid #4b7495;
+    border-radius: 12px;
+}
+QFrame#characterCard[role="killer"] {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #512a36, stop:1 #2b1d29);
+    border-color: #a45e6d;
+}
+QFrame#perkCard {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #332540, stop:1 #221e30);
+    border: 1px solid #654975;
+    border-radius: 12px;
+}
+QFrame#characterCard[locked="true"], QFrame#perkCard[locked="true"] { border: 1px solid #edbf75; }
+QFrame#sidebar { background: #22212d; border: 1px solid #544536; border-radius: 12px; }
+QFrame#controls { background: #1d2332; border: 1px solid #3b4962; border-radius: 12px; }
+QFrame#roleSwitch { background: #1c2130; border: 1px solid #3e435c; border-radius: 10px; }
+QPushButton {
+    background: #303448;
+    border: 1px solid #535b78;
+    border-radius: 7px;
+    padding: 10px 14px;
+    color: #efedf5;
+    font-size: 13px;
+    font-weight: 600;
+}
+QPushButton:hover { background: #41465e; border-color: #aaa0d3; }
+QPushButton:pressed { background: #535875; }
+QPushButton:focus, QLineEdit:focus, QListWidget:focus { border: 1px solid #edbf75; }
+QPushButton:disabled { color: #9896aa; background: #242535; border-color: #3f4054; }
+QPushButton#primaryButton { background: #dfad69; color: #241b15; border: 1px solid #f0c58e; font-size: 15px; }
+QPushButton#primaryButton:hover { background: #f2c68b; }
+QPushButton#primaryButton:pressed { background: #c69454; }
+QPushButton#primaryButton:disabled { background: #68573f; color: #c3b49f; border-color: #68573f; }
+QPushButton#roleButton { background: transparent; border: 1px solid transparent; padding: 10px 12px; color: #bebed0; }
+QPushButton#roleButton:checked { background: #77b5de; color: #142536; }
+QPushButton#roleButton[role="killer"]:checked { background: #df8b96; color: #301820; }
+QPushButton#roleButton:focus { border-color: #f3d5a6; }
+QPushButton#roleButton:hover:!checked { background: #34354a; }
+QPushButton#lockButton { padding: 7px 9px; font-size: 14px; background: #1e4545; color: #c5fff3; border-color: #65c9bb; }
+QPushButton#lockButton:hover { background: #2b5d59; border-color: #8ee5d5; }
+QPushButton#lockButton:pressed { background: #163735; }
+QPushButton#lockButton:checked { background: #5a422e; color: #ffdc9f; border-color: #d6aa67; }
+QPushButton#lockButton:checked:hover { background: #705237; border-color: #edbf75; }
+QPushButton#lockButton:checked:pressed { background: #463322; }
+QPushButton#lockButton:disabled { background: #252e32; border-color: #465c5c; color: #93aaa7; }
+QPushButton#textButton { border: 1px solid transparent; background: transparent; padding: 12px 16px; color: #e5bd88; font-size: 16px; }
+QFrame#perkCard QPushButton#textButton { padding: 6px 8px; font-size: 14px; }
+QPushButton#textButton:hover { color: #ffe3ba; background: #393044; }
+QPushButton#textButton:focus { border-color: #edbf75; }
+QPushButton#textButton:disabled { color: #9c94a7; }
+QLineEdit { background: #191c2b; border: 1px solid #525771; border-radius: 6px; padding: 9px 10px; selection-background-color: #655080; }
+QListWidget, QTextBrowser { background: #191b29; border: 1px solid #45425e; border-radius: 6px; padding: 5px; alternate-background-color: #222336; selection-background-color: #514064; outline: 0; }
+QListWidget::item { padding: 10px 7px; border-radius: 4px; }
+QListWidget::item:selected { background: #514064; color: #faf1ff; }
+QListWidget::item:hover { background: #36324a; }
+QListWidget#historyList { background: transparent; border: none; padding: 0; font-size: 12px; }
+QListWidget#historyList::item { padding: 10px 4px; border-bottom: 1px solid #3d3547; }
+QListWidget::indicator { width: 20px; height: 20px; border: 1px solid #a69ab9; border-radius: 3px; background: #211c30; }
+QListWidget::indicator:checked { background: #c39bdd; border: 3px solid #73518a; }
+QTabWidget::pane { border: 1px solid #524565; border-radius: 6px; }
+QTabBar::tab { padding: 12px 22px; background: #252236; color: #c4b8d5; }
+QTabBar::tab:selected { background: #574069; color: #f5e9ff; }
+QProgressBar { background: #27354b; border: none; }
+QProgressBar::chunk { background: #87bfea; }
+QScrollBar:vertical { width: 9px; background: #181b29; margin: 0; }
+QScrollBar::handle:vertical { background: #56516f; border-radius: 4px; min-height: 30px; }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: transparent; }
+QToolTip { background: #302b42; color: #f2e7ff; border: 1px solid #8e77a5; padding: 8px; }

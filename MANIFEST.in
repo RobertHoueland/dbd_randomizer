@@ -1,0 +1,5 @@
+include main.py
+include uv.lock
+include docs/screenshot.png
+include tools/fetch_artwork.py
+prune dbd_randomizer/data/artwork

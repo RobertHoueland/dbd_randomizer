@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dbd-randomizer"
+version = "1.0.0"
+description = "A Dead by Daylight character and perk randomizer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["PyQt6>=6.8,<7"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "pytest-qt>=4.4,<5", "ruff>=0.11,<1"]
+
+[project.gui-scripts]
+dbd-randomizer = "dbd_randomizer.app:main"
+
+[tool.setuptools.packages.find]
+include = ["dbd_randomizer*"]
+
+[tool.setuptools.package-data]
+dbd_randomizer = ["data/*.json", "*.qss", "*.ico"]
+
+[tool.setuptools.exclude-package-data]
+dbd_randomizer = ["data/artwork/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
